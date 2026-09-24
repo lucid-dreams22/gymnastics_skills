@@ -19,7 +19,7 @@ except ImportError:
 
 
 st.set_page_config(
-    page_title="High School Gymnastics Skill Helper",
+    page_title="High School Gymnastics Skills",
     page_icon="🤸",
     layout="wide",
     initial_sidebar_state="collapsed",
