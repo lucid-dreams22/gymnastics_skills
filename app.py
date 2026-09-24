@@ -87,7 +87,7 @@ st.markdown(
     }
 
     p, li, label, .stMarkdown {
-        font-size: 0.96rem !important;
+        font-size: 1.04rem !important;
         line-height: 1.24 !important;
     }
 
@@ -135,13 +135,13 @@ st.markdown(
     }
 
     div[data-baseweb="select"] span {
-        font-size: 0.95rem !important;
+        font-size: 1.03rem !important;
     }
 
     textarea {
         min-height: 88px !important;
         line-height: 1.23 !important;
-        font-size: 0.94rem !important;
+        font-size: 1.02rem !important;
     }
 
     hr {
@@ -150,7 +150,7 @@ st.markdown(
     }
 
     .eyebrow {
-        font-size: 0.75rem;
+        font-size: 0.94rem;
         text-transform: uppercase;
         letter-spacing: 0.08em;
         font-weight: 760;
@@ -159,7 +159,7 @@ st.markdown(
     }
 
     .intro-note {
-        font-size: 0.80rem;
+        font-size: 0.99rem;
         color: #5d6965;
         border-left: 3px solid #789a8d;
         padding: 0.18rem 0 0.18rem 0.55rem;
@@ -181,7 +181,7 @@ st.markdown(
     }
 
     .skill-meta {
-        font-size: 0.80rem;
+        font-size: 0.99rem;
         color: #65706c;
         margin-top: 0.10rem;
     }
@@ -193,7 +193,7 @@ st.markdown(
     }
 
     .difficulty-title {
-        font-size: 0.72rem;
+        font-size: 0.91rem;
         color: #65706c;
         text-transform: uppercase;
         letter-spacing: 0.07em;
@@ -211,21 +211,28 @@ st.markdown(
     }
 
     .point-value {
-        font-size: 0.80rem;
+        font-size: 1.00rem;
         color: #4f5c57;
-        margin-top: 0.20rem;
-        line-height: 1.12;
+        margin-top: 0.16rem;
+        line-height: 1.10;
+    }
+
+    .point-detail {
+        font-size: 0.88rem;
+        color: #6c7773;
+        margin-top: 0.05rem;
+        line-height: 1.08;
     }
 
     .section-note {
-        font-size: 0.76rem;
+        font-size: 0.95rem;
         color: #69746f;
         line-height: 1.15;
         margin: -0.08rem 0 0.22rem;
     }
 
     .shape-list {
-        font-size: 0.89rem;
+        font-size: 0.97rem;
         line-height: 1.30;
         color: #24302c;
     }
@@ -233,19 +240,19 @@ st.markdown(
     /* Deductions: intentionally NOT big cards. */
     .deduction-item {
         border-bottom: 1px solid #dce3e0;
-        padding: 0.22rem 0.16rem 0.23rem;
+        padding: 0.16rem 0.12rem 0.17rem;
         margin: 0;
-        min-height: 2.25rem;
+        min-height: 1.95rem;
     }
 
     .deduction-name {
-        font-size: 0.84rem;
+        font-size: 1.03rem;
         font-weight: 680;
         line-height: 1.07;
     }
 
     .deduction-detail {
-        font-size: 0.70rem;
+        font-size: 0.97rem;
         color: #6a7571;
         line-height: 1.05;
         margin-top: 0.06rem;
@@ -253,18 +260,18 @@ st.markdown(
 
     .combo-item {
         border-bottom: 1px solid #dce3e0;
-        padding: 0.23rem 0.16rem 0.24rem;
+        padding: 0.17rem 0.12rem 0.18rem;
         margin: 0;
     }
 
     .combo-name {
-        font-size: 0.84rem;
+        font-size: 1.03rem;
         font-weight: 700;
         line-height: 1.08;
     }
 
     .combo-detail {
-        font-size: 0.70rem;
+        font-size: 0.97rem;
         color: #68736f;
         line-height: 1.08;
         margin-top: 0.06rem;
@@ -283,7 +290,7 @@ st.markdown(
     .stButton > button {
         height: 2.35rem;
         border-radius: 7px;
-        font-size: 0.92rem;
+        font-size: 1.00rem;
         font-weight: 720;
     }
 
@@ -348,26 +355,38 @@ def difficulty_text(code):
     return label
 
 
-def max_difficulty_credit(code):
+def point_value(event, skill_id, difficulty):
     """
-    NFHS routine Difficulty is worth 3.0 total.
-    The basic requirement is scored as:
-      4 Medium VPs @ 0.30 each
-      3 Superior VPs @ 0.50 each
-      1 HS/AHS VP @ 0.30
-    This is therefore displayed as maximum routine Difficulty credit for
-    this VP slot, not as an intrinsic cash-like 'price' of the element.
+    NFHS scoring:
+    - Vault uses a vault start value.
+    - Bars/beam/floor use routine Difficulty credit.
+    - AHS may additionally earn 0.20 AHS bonus when eligible.
     """
+    if event == "vault":
+        if skill_id == "front_handspring":
+            return "8.60 start value"
+        if skill_id == "straddle_vault":
+            return "No current NFHS value"
+        return "See vault chart"
+
     mapping = {
         "M": "0.30",
         "S": "0.50",
         "HS": "0.30",
-        "AHS": "0.30 + possible bonus",
-        "NONE": "No standalone VP credit",
-        "NR": "Not valued under current NFHS rules",
-        "NA": "See vault value table",
+        "AHS": "0.50 max",
+        "NONE": "0.00",
+        "NR": "No current NFHS value",
+        "NA": "—",
     }
-    return mapping.get(code, "Varies")
+    return mapping.get(difficulty, "—")
+
+
+def point_value_detail(event, skill_id, difficulty):
+    if event == "vault":
+        return ""
+    if difficulty == "AHS":
+        return "0.30 difficulty + up to 0.20 AHS bonus"
+    return ""
 
 
 def skill_base_name(skill):
@@ -429,12 +448,6 @@ def render_deductions(event, skill_id, skill):
     items = merged_deductions(event, skill_id, skill)
 
     st.subheader("Possible deductions / errors")
-    st.markdown(
-        '<div class="section-note">'
-        'Skill-specific faults plus relevant form, event, and landing deductions.'
-        '</div>',
-        unsafe_allow_html=True,
-    )
 
     cols = st.columns(3, gap="small")
 
@@ -503,12 +516,6 @@ def target_variations(skill):
 
 def render_combinations(event, skill_id, skill, selected_rotation, selected_difficulty):
     st.subheader("Possible combinations")
-    st.markdown(
-        '<div class="section-note">'
-        'Every row names the exact rotation of both skills when rotation applies.'
-        '</div>',
-        unsafe_allow_html=True,
-    )
 
     ids = partner_ids(event, skill_id, skill)
 
@@ -576,17 +583,6 @@ def render_combinations(event, skill_id, skill, selected_rotation, selected_diff
 # Header
 # ---------------------------------------------------------------------
 st.title("High School Gymnastics Skill Helper")
-st.caption("NFHS-focused reference for selected varsity gymnastics skills")
-
-st.markdown(
-    """
-    <div class="intro-note">
-    Educational reference only. Technique guidance is not a substitute for a coach,
-    judge, current NFHS rules, or your state association.
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
 
 # ---------------------------------------------------------------------
 # Event / Skill / Rotation: same row
@@ -670,7 +666,8 @@ with summary_right:
                 {html.escape(difficulty_text(difficulty))}
             </div>
             <div class="point-value">
-                Max difficulty credit: <strong>{html.escape(max_difficulty_credit(difficulty))}</strong>
+                Max points: <strong>{html.escape(point_value(event, skill_id, difficulty))}</strong>
+                {f'<div class="point-detail">{html.escape(point_value_detail(event, skill_id, difficulty))}</div>' if point_value_detail(event, skill_id, difficulty) else ''}
             </div>
         </div>
         """,
@@ -797,6 +794,3 @@ if st.button("Analyze skill", type="primary", use_container_width=True):
         except Exception as exc:
             st.error(f"Analysis failed: {exc}")
 
-st.caption(
-    "NFHS rules cycle targeted: 2026–28. State associations may adopt variations."
-)
