@@ -2,7 +2,7 @@
 import html
 import streamlit as st
 
-from skills_data_v2 import (
+from skills_data import (
     SKILLS,
     DIFFICULTY_LABELS,
     COMBINATION_RULES,
