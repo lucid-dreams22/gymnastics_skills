@@ -1094,6 +1094,245 @@ SKILLS = {
 }
 
 
+
+# -------------------------------------------------------------------------
+# V2 deduction profiles and data corrections
+# -------------------------------------------------------------------------
+# These profiles are intentionally separated from each skill's own list:
+# they let the UI build a more comprehensive "possible deductions/errors"
+# list without copy/pasting identical judging faults into every element.
+#
+# Numerical values are only included when the NFHS material used for this
+# project supports a general deduction value/range. Other entries are kept
+# as observable faults without inventing a number.
+
+DEDUCTION_PROFILES = {
+    "universal_form": [
+        {"fault": "Bent knees / legs", "max": 0.30},
+        {"fault": "Leg or knee separation when legs should be together", "max": 0.20},
+        {"fault": "Relaxed / incorrect foot form", "max": 0.10},
+        {"fault": "Incorrect body alignment / posture", "max": 0.20},
+        {"fault": "Insufficient extension / amplitude"},
+        {"fault": "Poor control at completion"},
+    ],
+    "jump_dance": [
+        {"fault": "Insufficient height / amplitude", "max": 0.20},
+        {"fault": "Incomplete turn / twist"},
+        {"fault": "Turn begins before takeoff is complete"},
+        {"fault": "Incorrect body shape for the named jump"},
+        {"fault": "Poor arm position / uncontrolled arms"},
+        {"fault": "Landing with feet apart when together is expected"},
+    ],
+    "split_shape": [
+        {"fault": "Insufficient split angle", "max": 0.20},
+        {"fault": "Bent knees in split position"},
+        {"fault": "Uneven / unsquare hips"},
+        {"fault": "Back leg or front leg below required position"},
+    ],
+    "straddle_shape": [
+        {"fault": "Insufficient straddle width / split angle", "max": 0.20},
+        {"fault": "Legs below required horizontal position", "max": 0.20},
+        {"fault": "Insufficient pike at hips"},
+        {"fault": "Bent knees in straddle"},
+        {"fault": "Asymmetrical leg height"},
+    ],
+    "wolf_shape": [
+        {"fault": "Extended leg too low"},
+        {"fault": "Bent leg does not show clear wolf position"},
+        {"fault": "Torso drops excessively"},
+        {"fault": "Loss of body shape during turn"},
+    ],
+    "turn": [
+        {"fault": "Incomplete rotation"},
+        {"fault": "Turn travels away from starting point"},
+        {"fault": "Supporting heel drops early"},
+        {"fault": "Hop on supporting foot"},
+        {"fault": "Free leg changes position / is uncontrolled"},
+        {"fault": "Extra step at completion"},
+        {"fault": "Poor vertical body alignment"},
+    ],
+    "hand_support_acro": [
+        {"fault": "Bent arms during hand support", "max": 0.30},
+        {"fault": "Shoulders not fully open"},
+        {"fault": "Does not pass through vertical when required"},
+        {"fault": "Head out / poor head position"},
+        {"fault": "Hands placed too wide, crooked, or off line"},
+        {"fault": "Legs bend during inversion", "max": 0.30},
+        {"fault": "Leg separation incorrect for skill"},
+        {"fault": "Pike / arch error through inversion"},
+        {"fault": "Loss of rhythm / hesitation"},
+    ],
+    "walkover": [
+        {"fault": "Insufficient split through handstand", "max": 0.20},
+        {"fault": "Shoulders close during support"},
+        {"fault": "Hands or feet land off line"},
+        {"fault": "Pause in the middle of the walkover"},
+        {"fault": "Chest remains low on finish"},
+    ],
+    "handspring": [
+        {"fault": "Insufficient flight"},
+        {"fault": "Weak / late shoulder block"},
+        {"fault": "Hands remain on floor too long"},
+        {"fault": "Feet land too close to hands"},
+        {"fault": "Body pikes during snap-down / landing"},
+        {"fault": "Insufficient rebound / continuation when connected"},
+    ],
+    "aerial": [
+        {"fault": "Hands touch floor"},
+        {"fault": "Insufficient height / flight"},
+        {"fault": "Bent knees", "max": 0.30},
+        {"fault": "Insufficient leg separation"},
+        {"fault": "Low chest on landing"},
+        {"fault": "Direction / alignment error"},
+    ],
+    "balance": [
+        {"fault": "Hold shorter than required time"},
+        {"fault": "Supporting foot moves / pivots"},
+        {"fault": "Free leg drops during hold"},
+        {"fault": "Bent support or free leg"},
+        {"fault": "Large arm / torso correction"},
+        {"fault": "Loss of balance / step off"},
+    ],
+    "beam_execution": [
+        {"fault": "Balance error / wobble", "max": 0.30},
+        {"fault": "Extra step / foot adjustment"},
+        {"fault": "Pause that breaks a directly connected series"},
+        {"fault": "Pivot on both feet that breaks a directly connected series"},
+        {"fault": "Fall", "value": 0.50},
+    ],
+    "floor_execution": [
+        {"fault": "Poor landing control"},
+        {"fault": "Out-of-control step / lunge after landing"},
+        {"fault": "Fall", "value": 0.50},
+    ],
+    "landing": [
+        {"fault": "Slight hop / small adjustment / staggered feet", "max": 0.10},
+        {"fault": "Small or medium step", "range": [0.10, 0.15], "note": "per step, subject to event maximum"},
+        {"fault": "Large step or jump", "value": 0.20},
+        {"fault": "Additional trunk movement to maintain balance", "max": 0.20},
+        {"fault": "Squat landing with hips lower than knees", "max": 0.30},
+        {"fault": "Fall", "value": 0.50},
+    ],
+    "bars_execution": [
+        {"fault": "Poor rhythm / hesitation", "max": 0.10},
+        {"fault": "Extra swing not needed for the next element", "value": 0.30},
+        {"fault": "Bent arms in support", "max": 0.30},
+        {"fault": "Bent legs", "max": 0.30},
+        {"fault": "Leg / knee separation", "max": 0.20},
+        {"fault": "Incorrect arch / hollow / pike body shape", "max": 0.20},
+        {"fault": "Insufficient swing amplitude"},
+        {"fault": "Head thrown out of neutral"},
+        {"fault": "Loss of grip / fall", "value": 0.50},
+    ],
+    "vault_handspring": [
+        {"fault": "Incorrect hurdle / board contact"},
+        {"fault": "Takeoff not from two feet"},
+        {"fault": "Legs crossed in first or second flight", "max": 0.10},
+        {"fault": "Leg separation", "max": 0.20},
+        {"fault": "Bent knees", "max": 0.30},
+        {"fault": "Piked hip angle in first flight", "max": 0.30},
+        {"fault": "Bent arms during support / repulsion", "max": 0.50},
+        {"fault": "Closed shoulder angle on table", "max": 0.20},
+        {"fault": "Does not pass through vertical", "max": 0.30},
+        {"fault": "Prolonged support / insufficient block", "max": 0.50},
+        {"fault": "Insufficient second-flight height", "max": 0.50},
+        {"fault": "Insufficient second-flight distance", "max": 0.30},
+        {"fault": "Direction / alignment error", "max": 0.30},
+        {"fault": "Touches table with only one hand", "value": 1.00},
+    ],
+    # The straddle/flight vault is retained only because this project wants
+    # to teach it. NFHS 2026-28 no longer gives it a vault value.
+    "straddle_vault_practice": [
+        {"fault": "Incorrect hurdle / board contact"},
+        {"fault": "Takeoff not from two feet"},
+        {"fault": "Bent arms in support"},
+        {"fault": "Hands placed unevenly / off center"},
+        {"fault": "Hips do not rise sufficiently above the apparatus"},
+        {"fault": "Insufficient straddle width"},
+        {"fault": "Bent knees during straddle"},
+        {"fault": "Uneven / asymmetrical legs"},
+        {"fault": "Feet or legs contact the apparatus"},
+        {"fault": "Insufficient push away from the apparatus"},
+        {"fault": "Legs do not rejoin before landing"},
+        {"fault": "Direction / alignment error"},
+        {"fault": "Poor landing control"},
+        {"fault": "Small / medium landing step"},
+        {"fault": "Large landing step / jump"},
+        {"fault": "Deep squat on landing"},
+        {"fault": "Fall"},
+    ],
+    "dismount": [
+        {"fault": "Insufficient height"},
+        {"fault": "Insufficient distance from beam"},
+        {"fault": "Incomplete rotation"},
+        {"fault": "Poor body shape in flight"},
+        {"fault": "Late opening before landing"},
+        {"fault": "Under-rotation / over-rotation"},
+        {"fault": "Direction error"},
+    ],
+}
+
+
+def deduction_profiles_for(event: str, skill_id: str, skill: dict):
+    """Return profile names relevant to this exact skill."""
+    profiles = []
+    category = skill.get("category", "").lower()
+
+    if event == "vault":
+        if skill_id == "straddle_vault":
+            return ["straddle_vault_practice", "landing"]
+        return ["vault_handspring", "landing"]
+
+    profiles.append("universal_form")
+
+    if event == "bars":
+        profiles.append("bars_execution")
+        return profiles
+
+    if event == "beam":
+        profiles.append("beam_execution")
+    elif event == "floor":
+        profiles.append("floor_execution")
+
+    if category in {"jump", "dance"}:
+        profiles.append("jump_dance")
+    if "turn" in category:
+        profiles.append("turn")
+    if "balance" in category:
+        profiles.append("balance")
+    if category in {"acro", "acro flight", "dismount"}:
+        profiles.append("hand_support_acro")
+    if "walkover" in skill_id:
+        profiles.append("walkover")
+    if "handspring" in skill_id:
+        profiles.append("handspring")
+    if "aerial" in skill_id:
+        profiles.append("aerial")
+    if "dismount" in skill_id:
+        profiles.append("dismount")
+
+    if skill_id == "split_jump":
+        profiles.append("split_shape")
+    if skill_id == "straddle_jump":
+        profiles.append("straddle_shape")
+    if skill_id == "wolf_jump":
+        profiles.append("wolf_shape")
+
+    if event in {"beam", "floor"} and category not in {"balance"}:
+        profiles.append("landing")
+
+    return profiles
+
+
+# Make the retained straddle-vault entry useful in the app while making
+# its current competition status unmistakable.
+SKILLS["vault"]["straddle_vault"]["deductions"] = DEDUCTION_PROFILES["straddle_vault_practice"]
+SKILLS["vault"]["straddle_vault"]["rule_note"] = (
+    "Practice reference only: NFHS 2026-28 no longer lists the straddle/flight "
+    "vault as a valued vault, so these are technique faults rather than a current "
+    "NFHS competition deduction table for that vault."
+)
+
 SOURCE_NOTES = {
     "rules_cycle": "NFHS Girls Gymnastics 2026-2028",
     "official_sources": [
