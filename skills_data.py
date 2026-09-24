@@ -1382,3 +1382,996 @@ def combo_credit(difficulty_a: str, difficulty_b: str):
 
 def list_skill_options(event: str):
     return [(skill_id, data["name"]) for skill_id, data in SKILLS[event].items()]
+
+
+# =========================================================================
+# 2026-28 DIFFICULTY AUDIT + SELECTED SKILL EXPANSION
+# =========================================================================
+# Audit basis:
+# - NFHS 2026-28 rules changes state that the only element-table changes are
+#   Vault Boxes 6.6.1/6.6.3 and Beam Box 8.6.1 (mounts).
+# - Therefore the 2024-26 NFHS element tables remain applicable to the
+#   selected non-mount bars/beam/floor elements unless a 2026 interpretation
+#   says otherwise.
+# - Generic practice balances that are not tied to one uniquely identified
+#   NFHS value-part illustration are NOT assigned a made-up difficulty.
+
+# ---- Corrections to existing skills -------------------------------------
+
+# Bars
+SKILLS["bars"]["pullover"]["difficulty"] = "M"
+SKILLS["bars"]["back_hip_circle"]["difficulty"] = "M"
+
+# A cast squat-on is treated as Superior in current NFHS routine examples
+# tied to the NFHS cue sheet.
+SKILLS["bars"]["squat_on"]["difficulty"] = "S"
+
+# Keep low-bar glide kip separate from the explicitly Superior long-hang kip.
+SKILLS["bars"]["glide_kip"]["difficulty"] = "M"
+SKILLS["bars"]["tap_swing"]["difficulty"] = "NONE"
+
+# Beam dance values: audited against NFHS beam cue sheet / 2026 interpretation.
+SKILLS["beam"]["tuck_jump"]["difficulty"] = "M"
+SKILLS["beam"]["tuck_jump"]["rotations"] = {
+    "0": "M", "0.5": "S", "0.75": "HS", "1.0": "AHS"
+}
+SKILLS["beam"]["straight_jump"]["difficulty"] = "M"
+SKILLS["beam"]["straight_jump"]["rotations"] = {
+    "0": "M", "0.5": "M", "0.75": "S", "1.0": "HS", "1.5": "AHS"
+}
+SKILLS["beam"]["split_jump"]["difficulty"] = "S"
+SKILLS["beam"]["split_jump"]["rotations"] = {
+    "0": "S", "0.5": "HS", "0.75": "AHS"
+}
+SKILLS["beam"]["straddle_jump"]["difficulty"] = "HS"
+SKILLS["beam"]["straddle_jump"]["rotations"] = {
+    "0": "HS", "0.5": "AHS"
+}
+SKILLS["beam"]["cat_leap"]["difficulty"] = "M"
+SKILLS["beam"]["cat_leap"]["rotations"] = {
+    "0": "M", "0.5": "S", "1.0": "HS", "1.5": "AHS"
+}
+SKILLS["beam"]["wolf_jump"]["difficulty"] = "S"
+SKILLS["beam"]["wolf_jump"]["rotations"] = {
+    "0": "S", "0.5": "HS", "0.75": "AHS"
+}
+SKILLS["beam"]["full_turn"]["difficulty"] = "M"
+
+# Basic non-flight acro.
+for _id in ["handstand", "front_walkover", "back_walkover", "cartwheel"]:
+    SKILLS["beam"][_id]["difficulty"] = "M"
+
+# These four were intentionally added as beginner practice balances earlier.
+# The names are not specific enough to guarantee one unique NFHS value-part
+# illustration, so do not pretend they have an official M/S/HS/AHS value.
+for _id in ["arabesque", "scale", "knee_scale", "leg_hold"]:
+    SKILLS["beam"][_id]["difficulty"] = "NONE"
+    SKILLS["beam"][_id]["note"] = (
+        "Practice balance reference. This generic name is not mapped to a single "
+        "verified NFHS value-part illustration."
+    )
+
+# Selected dismounts retained in this short project.
+SKILLS["beam"]["roundoff_dismount"]["difficulty"] = "S"
+SKILLS["beam"]["front_tuck_dismount"]["difficulty"] = "S"
+SKILLS["beam"]["back_tuck_dismount"]["difficulty"] = "S"
+
+# Floor dance values: audited against the NFHS floor difficulty table.
+SKILLS["floor"]["tuck_jump"]["difficulty"] = "M"
+SKILLS["floor"]["tuck_jump"]["rotations"] = {
+    "0": "M", "0.5": "M", "1.0": "S", "1.5": "HS", "2.0": "AHS"
+}
+SKILLS["floor"]["straight_jump"]["difficulty"] = "M"
+SKILLS["floor"]["straight_jump"]["rotations"] = {
+    "1.0": "M", "1.5": "S", "2.0": "HS", "3.0": "AHS"
+}
+SKILLS["floor"]["split_jump"]["difficulty"] = "M"
+SKILLS["floor"]["split_jump"]["rotations"] = {
+    "0": "M", "0.5": "S", "1.0": "HS", "1.5": "AHS"
+}
+SKILLS["floor"]["straddle_jump"]["difficulty"] = "S"
+SKILLS["floor"]["straddle_jump"]["rotations"] = {
+    "0": "S", "0.5": "S", "1.0": "HS", "1.5": "AHS"
+}
+SKILLS["floor"]["cat_leap"]["difficulty"] = "M"
+SKILLS["floor"]["cat_leap"]["rotations"] = {
+    "0": "M", "0.5": "M", "1.0": "S", "1.5": "HS", "2.0": "AHS"
+}
+SKILLS["floor"]["wolf_jump"]["difficulty"] = "M"
+SKILLS["floor"]["wolf_jump"]["rotations"] = {
+    "0": "M", "0.5": "S", "1.0": "HS", "1.5": "AHS"
+}
+SKILLS["floor"]["turn_1_5"]["difficulty"] = "S"
+SKILLS["floor"]["double_turn"]["difficulty"] = "HS"
+
+for _id in [
+    "handstand", "handstand_forward_roll", "cartwheel", "roundoff",
+    "front_walkover", "back_walkover", "front_handspring", "back_handspring"
+]:
+    SKILLS["floor"][_id]["difficulty"] = "M"
+
+# Directly connected aerial examples in NFHS guidance are S + S, so each
+# selected aerial is Superior, not High Superior.
+SKILLS["floor"]["front_aerial"]["difficulty"] = "S"
+SKILLS["floor"]["side_aerial"]["difficulty"] = "S"
+
+
+# ---- Five additional UNEVEN BARS skills --------------------------------
+
+SKILLS["bars"].update({
+    "long_hang_kip": {
+        "name": "Long-Hang Kip",
+        "category": "kip",
+        "difficulty": "S",
+        "rotations": {},
+        "how_to": (
+            "Begin in a long hang on the high bar. Swing forward with a long body line, "
+            "bring the toes toward the bar as the swing returns, then pull the bar toward "
+            "the thighs while shifting the wrists over it. Finish in a controlled clear "
+            "support with straight arms."
+        ),
+        "key_shapes": [
+            "Long forward swing", "Legs together", "Feet close toward bar",
+            "Bar stays close to thighs", "Straight-arm finish"
+        ],
+        "deductions": [
+            {"fault": "Insufficient extension in the long swing"},
+            {"fault": "Bent knees"},
+            {"fault": "Leg separation"},
+            {"fault": "Early arm pull"},
+            {"fault": "Failure to finish in controlled support"},
+        ],
+        "connections": ["clear_hip_circle", "cast_handstand", "giant", "tuck_flyaway"],
+    },
+    "cast_handstand": {
+        "name": "Cast to Handstand",
+        "category": "cast",
+        "difficulty": "S",
+        "rotations": {},
+        "how_to": (
+            "From front support, push the hips away from the bar and drive the legs upward "
+            "while keeping the arms straight. Open the shoulders and hips as the body rises "
+            "to a straight handstand line over the bar. Control the return or continue "
+            "directly into the next element."
+        ),
+        "key_shapes": [
+            "Straight arms", "Open shoulders", "Tight body line",
+            "Legs together", "Handstand within required vertical range"
+        ],
+        "deductions": [
+            {"fault": "Cast does not rise close enough to vertical"},
+            {"fault": "Bent arms"},
+            {"fault": "Bent knees"},
+            {"fault": "Leg separation"},
+            {"fault": "Piked or arched body"},
+        ],
+        "connections": ["giant", "clear_hip_circle", "squat_on"],
+        "rule_note": "A cast reaching within 20° of vertical can receive Superior credit."
+    },
+    "clear_hip_circle": {
+        "name": "Clear Hip Circle",
+        "category": "clear circle",
+        "difficulty": "S",
+        "rotations": {},
+        "how_to": (
+            "From support or a cast, allow the body to circle backward around the bar while "
+            "keeping the hips clear of contact. Maintain straight arms and a tight body line, "
+            "then open the shoulders and hips to finish in clear support or handstand."
+        ),
+        "key_shapes": [
+            "Hips remain clear of bar", "Straight arms", "Continuous backward circle",
+            "Open shoulders on finish", "Finish in clear support or handstand"
+        ],
+        "deductions": [
+            {"fault": "Hips contact the bar"},
+            {"fault": "Insufficient amplitude"},
+            {"fault": "Bent arms"},
+            {"fault": "Bent knees"},
+            {"fault": "Pike / arch error"},
+            {"fault": "Failure to finish in clear support"},
+        ],
+        "connections": ["long_hang_kip", "cast_handstand", "giant"],
+    },
+    "giant": {
+        "name": "Backward Giant",
+        "category": "giant",
+        "difficulty": "HS",
+        "rotations": {},
+        "how_to": (
+            "From a handstand or long swing, rotate completely around the high bar with "
+            "straight arms. Use a controlled hollow-to-arch-to-hollow tap through the bottom "
+            "and keep the body extended as the shoulders rise back toward handstand."
+        ),
+        "key_shapes": [
+            "Straight arms throughout", "Long body line", "Controlled tap",
+            "Body returns close to vertical", "Legs together"
+        ],
+        "deductions": [
+            {"fault": "Does not finish within required range of vertical"},
+            {"fault": "Bent arms"},
+            {"fault": "Bent knees"},
+            {"fault": "Leg separation"},
+            {"fault": "Excessive pike / arch"},
+            {"fault": "Poor rhythm through the bottom"},
+        ],
+        "connections": ["giant", "tuck_flyaway", "cast_handstand"],
+    },
+    "tuck_flyaway": {
+        "name": "Tuck Flyaway",
+        "category": "dismount",
+        "difficulty": "S",
+        "rotations": {},
+        "how_to": (
+            "Use the final high-bar swing to create height away from the bar. Release after "
+            "the body has risen, bring the knees toward the chest into a compact tuck, rotate "
+            "backward, then open before landing on both feet."
+        ),
+        "key_shapes": [
+            "Adequate release height", "Clear distance from bar",
+            "Compact tuck", "Open before landing", "Two-foot landing"
+        ],
+        "deductions": [
+            {"fault": "Release too early or too late"},
+            {"fault": "Insufficient height"},
+            {"fault": "Insufficient distance from bar"},
+            {"fault": "Loose tuck shape"},
+            {"fault": "Late opening"},
+            {"fault": "Under- or over-rotation"},
+        ],
+        "connections": [],
+    },
+})
+
+
+# ---- Five additional BALANCE BEAM skills -------------------------------
+
+SKILLS["beam"].update({
+    "back_handspring": {
+        "name": "Back Handspring",
+        "category": "acro flight",
+        "difficulty": "S",
+        "rotations": {},
+        "how_to": (
+            "From a controlled standing position, sit slightly through the hips and jump "
+            "backward along the beam. Reach for the beam with straight arms, pass through "
+            "an inverted position, then snap the legs down to land in line on the beam."
+        ),
+        "key_shapes": [
+            "Backward flight", "Straight arms", "Open shoulders",
+            "Tight inverted line", "Feet return to beam centerline"
+        ],
+        "deductions": [
+            {"fault": "Insufficient flight"},
+            {"fault": "Bent arms"},
+            {"fault": "Bent knees"},
+            {"fault": "Hands placed off line"},
+            {"fault": "Pike / arch error"},
+            {"fault": "Feet land off beam centerline"},
+        ],
+        "connections": ["back_handspring", "back_walkover", "back_tuck_dismount"],
+        "rule_note": (
+            "A single back handspring is Superior. Under the NFHS beam special connection "
+            "rule, its value can increase when it is the first element directly connected "
+            "to another qualifying acro element."
+        )
+    },
+    "front_handspring": {
+        "name": "Front Handspring",
+        "category": "acro flight",
+        "difficulty": "HS",
+        "rotations": {},
+        "how_to": (
+            "Step or hurdle into a long lunge, place the hands in line on the beam, and kick "
+            "through vertical. Block strongly through straight arms and open shoulders so "
+            "there is visible flight before the feet return to the beam."
+        ),
+        "key_shapes": [
+            "Hands aligned on beam", "Straight arms", "Pass through vertical",
+            "Visible flight", "Controlled landing"
+        ],
+        "deductions": [
+            {"fault": "Insufficient flight"},
+            {"fault": "Bent arms"},
+            {"fault": "Bent knees"},
+            {"fault": "Does not pass through vertical"},
+            {"fault": "Closed shoulder angle"},
+            {"fault": "Landing off line"},
+        ],
+        "connections": ["front_walkover", "cartwheel", "front_tuck_dismount"],
+    },
+    "front_aerial": {
+        "name": "Front Aerial",
+        "category": "acro flight",
+        "difficulty": "AHS",
+        "rotations": {},
+        "how_to": (
+            "Drive from a strong step or lunge and kick the back leg aggressively overhead "
+            "as the torso reaches forward. Pass through a split position without placing "
+            "the hands on the beam, then land one foot at a time in line."
+        ),
+        "key_shapes": [
+            "No hand support", "Strong split action", "Adequate flight",
+            "Straight legs", "Controlled one-two landing"
+        ],
+        "deductions": [
+            {"fault": "Hands touch the beam"},
+            {"fault": "Insufficient flight"},
+            {"fault": "Insufficient split"},
+            {"fault": "Bent knees"},
+            {"fault": "Landing off line"},
+        ],
+        "connections": ["front_walkover", "cartwheel"],
+    },
+    "side_aerial": {
+        "name": "Side Aerial",
+        "category": "acro flight",
+        "difficulty": "AHS",
+        "rotations": {},
+        "how_to": (
+            "Enter with a strong sideward cartwheel action and drive the legs fast enough "
+            "to rotate over the beam without hand support. Keep the legs straight and "
+            "separated through inversion, then place the feet back onto the beam one at a time."
+        ),
+        "key_shapes": [
+            "No hand support", "Sideward flight", "Straight separated legs",
+            "Body passes inverted", "Feet land in line"
+        ],
+        "deductions": [
+            {"fault": "Hands touch the beam"},
+            {"fault": "Insufficient flight"},
+            {"fault": "Bent knees"},
+            {"fault": "Poor leg separation"},
+            {"fault": "Direction error / landing off line"},
+        ],
+        "connections": ["cartwheel", "back_walkover"],
+    },
+    "switch_leap": {
+        "name": "Switch Leap 180°",
+        "category": "dance",
+        "difficulty": "HS",
+        "rotations": {
+            "0": "HS",
+            "0.5": "AHS",
+        },
+        "how_to": (
+            "Take off from one foot after swinging the lead leg forward. Switch the legs "
+            "in the air so the opposite leg becomes the front leg, and show a full 180° "
+            "split before landing on one foot. Keep the torso lifted and knees straight."
+        ),
+        "key_shapes": [
+            "Clear leg switch", "180° split", "Straight knees",
+            "Lifted torso", "Controlled one-foot landing"
+        ],
+        "deductions": [
+            {"fault": "Insufficient initial lead-leg swing"},
+            {"fault": "Insufficient split", "max": 0.20},
+            {"fault": "Bent knees"},
+            {"fault": "Insufficient height", "max": 0.20},
+            {"fault": "Incomplete turn"},
+            {"fault": "Balance error on landing"},
+        ],
+        "connections": ["split_jump", "wolf_jump", "tuck_jump", "switch_leap"],
+    },
+})
+
+
+# ---- Five additional FLOOR EXERCISE skills -----------------------------
+
+SKILLS["floor"].update({
+    "pike_jump": {
+        "name": "Pike Jump 90°",
+        "category": "jump",
+        "difficulty": "M",
+        "rotations": {
+            "0": "M", "0.5": "S", "1.0": "HS", "1.5": "AHS"
+        },
+        "how_to": (
+            "Jump upward from two feet and lift both straight legs together in front while "
+            "closing at the hips to about 90°. Keep the knees straight and toes pointed, "
+            "then open the hips before landing."
+        ),
+        "key_shapes": [
+            "Two-foot takeoff", "About 90° hip closure",
+            "Straight together legs", "Pointed toes", "Controlled landing"
+        ],
+        "deductions": [
+            {"fault": "Insufficient pike closure"},
+            {"fault": "Bent knees"},
+            {"fault": "Insufficient height", "max": 0.20},
+            {"fault": "Leg separation"},
+            {"fault": "Incomplete turn"},
+        ],
+        "connections": ["tuck_jump", "split_jump", "straddle_jump", "wolf_jump"],
+    },
+    "split_leap": {
+        "name": "Split Leap 180°",
+        "category": "dance",
+        "difficulty": "M",
+        "rotations": {
+            "0": "M", "0.5": "S", "1.0": "HS"
+        },
+        "how_to": (
+            "Take off from one foot and travel forward while opening the legs into a 180° "
+            "front-back split. Keep both knees straight, toes pointed, and the torso lifted, "
+            "then land on the opposite foot with control."
+        ),
+        "key_shapes": [
+            "One-foot takeoff", "180° split", "Straight knees",
+            "Square hips", "One-foot landing"
+        ],
+        "deductions": [
+            {"fault": "Insufficient split", "max": 0.20},
+            {"fault": "Bent knees"},
+            {"fault": "Insufficient height", "max": 0.20},
+            {"fault": "Hips not square"},
+            {"fault": "Incomplete turn"},
+        ],
+        "connections": ["switch_leap", "split_jump", "straddle_jump", "wolf_jump"],
+    },
+    "switch_leap": {
+        "name": "Switch Leap 180°",
+        "category": "dance",
+        "difficulty": "S",
+        "rotations": {
+            "0": "S", "0.5": "HS", "1.0": "AHS"
+        },
+        "how_to": (
+            "Swing the lead leg forward, take off from the opposite foot, then switch the "
+            "legs in the air so the other leg becomes the front leg. Show a full 180° split "
+            "after the switch and land on one foot without breaking the travel."
+        ),
+        "key_shapes": [
+            "Clear switch action", "180° split", "Straight knees",
+            "Lifted torso", "Continuous travel"
+        ],
+        "deductions": [
+            {"fault": "Lead leg does not swing clearly before switch"},
+            {"fault": "Insufficient split", "max": 0.20},
+            {"fault": "Bent knees"},
+            {"fault": "Insufficient height", "max": 0.20},
+            {"fault": "Incomplete turn"},
+        ],
+        "connections": ["split_leap", "split_jump", "switch_leap"],
+    },
+    "stag_split_jump": {
+        "name": "Stag Split Jump 180°",
+        "category": "jump",
+        "difficulty": "M",
+        "rotations": {
+            "0": "M", "0.5": "S"
+        },
+        "how_to": (
+            "Jump from two feet and open into a split position with one leg bent in a clear "
+            "stag shape while the other leg extends. Show the required split amplitude, "
+            "keep the shape deliberate, then reclose the legs for landing."
+        ),
+        "key_shapes": [
+            "Clear stag shape", "180° split line", "Controlled torso",
+            "Pointed toes", "Two-foot landing"
+        ],
+        "deductions": [
+            {"fault": "Stag shape is unclear"},
+            {"fault": "Insufficient split", "max": 0.20},
+            {"fault": "Insufficient height", "max": 0.20},
+            {"fault": "Poor leg form"},
+            {"fault": "Incomplete turn"},
+        ],
+        "connections": ["split_jump", "split_leap", "straddle_jump"],
+    },
+    "double_stag_jump": {
+        "name": "Double Stag Jump",
+        "category": "jump",
+        "difficulty": "M",
+        "rotations": {
+            "0": "M", "0.5": "M", "1.0": "S"
+        },
+        "how_to": (
+            "Jump from two feet and bend both legs into a clear double-stag position while "
+            "maintaining height through the torso. Keep the shape controlled and symmetrical, "
+            "then open the legs before landing."
+        ),
+        "key_shapes": [
+            "Two-foot takeoff", "Both legs show stag shape",
+            "Adequate height", "Controlled torso", "Stable landing"
+        ],
+        "deductions": [
+            {"fault": "Double-stag shape is unclear"},
+            {"fault": "Leg positions are asymmetrical"},
+            {"fault": "Insufficient height", "max": 0.20},
+            {"fault": "Poor foot form"},
+            {"fault": "Incomplete turn"},
+        ],
+        "connections": ["tuck_jump", "split_jump", "stag_split_jump"],
+    },
+})
+
+
+# Compact audit metadata for UI/debugging and future maintenance.
+DIFFICULTY_AUDIT = {
+    "rules_cycle": "NFHS 2026-28",
+    "notes": [
+        "2026-28 element changes affect selected vault boxes and Beam Box 8.6.1 (mounts); this project does not include beam mounts.",
+        "Beam tuck jump 3/4 is HS; tuck jump 1/2 is S per 2026 NFHS interpretation.",
+        "Floor front and side aerials corrected from HS to S.",
+        "Generic beam practice balances are no longer assigned invented NFHS difficulty values.",
+        "Straddle/flight vault remains in the app only as a practice reference and has no current NFHS value.",
+    ],
+}
+
+
+# =========================================================================
+# FLOOR SALTOS — VERIFIED / HIGH-SCHOOL-RELEVANT SET
+# =========================================================================
+# Difficulty references:
+# - Basic front/back saltos are Superior in NFHS high-school routine examples.
+# - Stretched forward salto (front layout) is explicitly Superior in the
+#   2026 NFHS interpretation.
+# - Back layout 1/2 is explicitly Superior in NFHS supplemental evaluation.
+# - Back salto 1/1 = HS (9.301).
+# - Front salto 1/1 or more = AHS (8.401).
+# - Back salto 1 1/2 or more = AHS (9.401).
+# - Double front = AHS (8.403).
+# - Double back = AHS (9.403).
+
+# A salto-specific profile. These are observable execution faults; numerical
+# deductions are only attached where a general NFHS value is already used.
+DEDUCTION_PROFILES["salto"] = [
+    {"fault": "Insufficient height / amplitude", "max": 0.20},
+    {"fault": "Takeoff is not fully extended before rotation"},
+    {"fault": "Head thrown backward / forward to initiate rotation"},
+    {"fault": "Loose or incorrect body position"},
+    {"fault": "Bent knees when a straight or piked shape is required", "max": 0.30},
+    {"fault": "Leg separation when legs should remain together", "max": 0.20},
+    {"fault": "Relaxed / incorrect foot form", "max": 0.10},
+    {"fault": "Body position changes too early"},
+    {"fault": "Insufficient opening before landing"},
+    {"fault": "Under-rotation"},
+    {"fault": "Over-rotation"},
+    {"fault": "Low chest on landing"},
+    {"fault": "Poor direction / travels off line"},
+]
+
+
+SKILLS["floor"].update({
+
+    # ------------------------------------------------------------------
+    # FORWARD SALTOS
+    # ------------------------------------------------------------------
+    "front_tuck": {
+        "name": "Front Tuck",
+        "category": "salto",
+        "direction": "forward",
+        "body_position": "tuck",
+        "difficulty": "S",
+        "rotations": {},
+        "how_to": (
+            "Use a controlled run and hurdle into a two-foot punch. Drive upward through "
+            "the legs and arms before beginning the forward rotation. Bring the knees toward "
+            "the chest into a compact tuck while keeping the chest lifted through takeoff. "
+            "Open the tuck before the floor and prepare to land on both feet."
+        ),
+        "key_shapes": [
+            "Two-foot punch",
+            "Upward lift before rotation",
+            "Compact tuck",
+            "Knees together",
+            "Open before landing",
+        ],
+        "deductions": [
+            {"fault": "Rotation begins before full takeoff"},
+            {"fault": "Insufficient height"},
+            {"fault": "Loose tuck"},
+            {"fault": "Knees separate"},
+            {"fault": "Late opening"},
+            {"fault": "Low chest on landing"},
+        ],
+        "connections": [
+            "front_tuck", "front_pike", "front_layout",
+            "roundoff", "front_handspring"
+        ],
+    },
+
+    "front_pike": {
+        "name": "Front Pike",
+        "category": "salto",
+        "direction": "forward",
+        "body_position": "pike",
+        "difficulty": "S",
+        "rotations": {},
+        "how_to": (
+            "Punch from two feet and create height before rotating forward. Keep the knees "
+            "straight and close the hips into a clear pike while the legs stay together. "
+            "Maintain the pike through the main part of the rotation, then open the hips "
+            "early enough to prepare for a controlled landing."
+        ),
+        "key_shapes": [
+            "Two-foot punch",
+            "Straight knees",
+            "Clear pike at hips",
+            "Legs together",
+            "Visible opening before landing",
+        ],
+        "deductions": [
+            {"fault": "Insufficient pike position"},
+            {"fault": "Bent knees"},
+            {"fault": "Insufficient height"},
+            {"fault": "Pike opens too early"},
+            {"fault": "Late opening"},
+            {"fault": "Low chest on landing"},
+        ],
+        "connections": [
+            "front_tuck", "front_layout", "roundoff", "front_handspring"
+        ],
+    },
+
+    "front_layout": {
+        "name": "Front Layout",
+        "category": "salto",
+        "direction": "forward",
+        "body_position": "stretched",
+        "difficulty": "S",
+        "rotations": {},
+        "how_to": (
+            "Punch upward from two feet and maintain a stretched body line while rotating "
+            "forward. Keep the hips open, core tight, legs together, and knees straight. "
+            "Avoid folding at the hips to create the rotation. Prepare the feet underneath "
+            "the body for landing as the rotation finishes."
+        ),
+        "key_shapes": [
+            "Strong upward punch",
+            "Open hips",
+            "Straight body line",
+            "Straight knees",
+            "Legs together",
+        ],
+        "deductions": [
+            {"fault": "Piked hips instead of stretched position", "max": 0.30},
+            {"fault": "Bent knees"},
+            {"fault": "Insufficient height"},
+            {"fault": "Body shape breaks during rotation"},
+            {"fault": "Low chest on landing"},
+        ],
+        "connections": [
+            "front_tuck", "front_pike", "roundoff", "front_handspring"
+        ],
+        "rule_note": (
+            "NFHS 2026 interpretation explicitly identifies a stretched forward salto "
+            "as Superior."
+        ),
+    },
+
+    "front_full": {
+        "name": "Front Layout Full",
+        "category": "salto",
+        "direction": "forward",
+        "body_position": "stretched",
+        "difficulty": "AHS",
+        "rotations": {"1.0": "AHS"},
+        "how_to": (
+            "Create a high stretched front salto first, then add one full longitudinal twist "
+            "while keeping the body tight and extended. The takeoff should rise before the "
+            "twist begins. Complete the twist and forward rotation before preparing for a "
+            "two-foot landing."
+        ),
+        "key_shapes": [
+            "Stretched front salto",
+            "Full 360° twist",
+            "Twist begins after lift",
+            "Tight vertical axis",
+            "Rotation complete before landing",
+        ],
+        "deductions": [
+            {"fault": "Twist begins too early"},
+            {"fault": "Incomplete twist"},
+            {"fault": "Piked hips"},
+            {"fault": "Bent knees"},
+            {"fault": "Insufficient height"},
+            {"fault": "Off-axis rotation"},
+            {"fault": "Under-rotation on landing"},
+        ],
+        "connections": [
+            "front_tuck", "front_layout", "roundoff", "front_handspring"
+        ],
+    },
+
+    # ------------------------------------------------------------------
+    # BACKWARD SALTOS
+    # ------------------------------------------------------------------
+    "back_tuck": {
+        "name": "Back Tuck",
+        "category": "salto",
+        "direction": "backward",
+        "body_position": "tuck",
+        "difficulty": "S",
+        "rotations": {},
+        "how_to": (
+            "Take off vertically from both feet with the chest lifted and arms driving upward. "
+            "Finish the upward extension before pulling the knees toward the chest. Rotate "
+            "backward in a compact tuck, then open the hips and knees before landing on both feet."
+        ),
+        "key_shapes": [
+            "Vertical takeoff",
+            "Chest lifted",
+            "Compact tuck",
+            "Knees together",
+            "Open before landing",
+        ],
+        "deductions": [
+            {"fault": "Throws head backward on takeoff"},
+            {"fault": "Insufficient height"},
+            {"fault": "Loose tuck"},
+            {"fault": "Knees separate"},
+            {"fault": "Opens too late"},
+            {"fault": "Under-rotation"},
+        ],
+        "connections": [
+            "back_tuck", "back_pike", "back_layout",
+            "back_full", "roundoff", "back_handspring"
+        ],
+    },
+
+    "back_pike": {
+        "name": "Back Pike",
+        "category": "salto",
+        "direction": "backward",
+        "body_position": "pike",
+        "difficulty": "S",
+        "rotations": {},
+        "how_to": (
+            "Jump vertically from both feet and finish the takeoff before rotating backward. "
+            "Keep the knees straight and close sharply at the hips into a pike. Maintain the "
+            "pike through the main part of the salto, then open the hips in time to land upright."
+        ),
+        "key_shapes": [
+            "Vertical takeoff",
+            "Straight knees",
+            "Clear hip pike",
+            "Legs together",
+            "Open before landing",
+        ],
+        "deductions": [
+            {"fault": "Insufficient pike position"},
+            {"fault": "Bent knees"},
+            {"fault": "Head thrown backward"},
+            {"fault": "Insufficient height"},
+            {"fault": "Late opening"},
+            {"fault": "Under-rotation"},
+        ],
+        "connections": [
+            "back_tuck", "back_layout", "roundoff", "back_handspring"
+        ],
+    },
+
+    "back_layout": {
+        "name": "Back Layout",
+        "category": "salto",
+        "direction": "backward",
+        "body_position": "stretched",
+        "difficulty": "S",
+        "rotations": {
+            "0": "S",
+            "0.5": "S",
+            "1.0": "HS",
+            "1.5": "AHS",
+            "2.0": "AHS",
+        },
+        "rotation_aliases": {
+            "0.5": "Back half",
+            "1.0": "Back full",
+            "1.5": "Back 1½",
+            "2.0": "Double full",
+        },
+        "how_to": (
+            "Take off upward with the body extended, then rotate backward while keeping the "
+            "hips open and the body stretched. For twisting versions, establish the salto "
+            "and a tight body axis before adding the twist. Complete the selected twist "
+            "before landing."
+        ),
+        "key_shapes": [
+            "Vertical set",
+            "Stretched hips",
+            "Straight knees",
+            "Legs together",
+            "Tight twisting axis when applicable",
+        ],
+        "deductions": [
+            {"fault": "Piked hips instead of stretched position", "max": 0.30},
+            {"fault": "Bent knees"},
+            {"fault": "Insufficient height"},
+            {"fault": "Twist begins too early"},
+            {"fault": "Incomplete twist"},
+            {"fault": "Off-axis rotation"},
+        ],
+        "connections": [
+            "back_tuck", "back_pike", "back_layout",
+            "roundoff", "back_handspring"
+        ],
+        "rule_note": (
+            "NFHS specifically identifies back layout 1/2 as Superior; back full is HS; "
+            "back 1½ or more is AHS."
+        ),
+    },
+
+    # Separate searchable alias because gymnasts commonly look for "back full".
+    "back_full": {
+        "name": "Back Full",
+        "category": "salto",
+        "direction": "backward",
+        "body_position": "stretched",
+        "difficulty": "HS",
+        "rotations": {"1.0": "HS"},
+        "how_to": (
+            "Set a stretched back salto upward, then complete one full 360° twist while "
+            "maintaining a tight body line. Keep the twist centered around the body's long "
+            "axis and finish it before preparing for the landing."
+        ),
+        "key_shapes": [
+            "High vertical set",
+            "Stretched body",
+            "Full 360° twist",
+            "Legs together",
+            "Controlled landing",
+        ],
+        "deductions": [
+            {"fault": "Twist starts before the set is complete"},
+            {"fault": "Incomplete full twist"},
+            {"fault": "Piked hips"},
+            {"fault": "Bent knees"},
+            {"fault": "Off-axis rotation"},
+            {"fault": "Insufficient height"},
+        ],
+        "connections": [
+            "back_tuck", "back_layout", "roundoff", "back_handspring"
+        ],
+    },
+
+    "back_one_half": {
+        "name": "Back 1½ Twist",
+        "category": "salto",
+        "direction": "backward",
+        "body_position": "stretched",
+        "difficulty": "AHS",
+        "rotations": {"1.5": "AHS"},
+        "how_to": (
+            "Create a high stretched backward salto and then complete one and a half twists. "
+            "Keep the hips open and body tight while twisting, and finish facing the opposite "
+            "direction from takeoff before landing."
+        ),
+        "key_shapes": [
+            "High set",
+            "Stretched body",
+            "1½ twists",
+            "Tight axis",
+            "Forward-facing landing",
+        ],
+        "deductions": [
+            {"fault": "Twist begins too early"},
+            {"fault": "Incomplete 1½ twist"},
+            {"fault": "Insufficient height"},
+            {"fault": "Piked hips"},
+            {"fault": "Off-axis rotation"},
+            {"fault": "Poor landing control"},
+        ],
+        "connections": [
+            "front_tuck", "front_layout", "roundoff", "back_handspring"
+        ],
+    },
+
+    # ------------------------------------------------------------------
+    # DOUBLE SALTOS
+    # ------------------------------------------------------------------
+    "double_back_tuck": {
+        "name": "Double Back Tuck",
+        "category": "salto",
+        "direction": "backward",
+        "body_position": "tuck",
+        "difficulty": "AHS",
+        "rotations": {},
+        "how_to": (
+            "Generate a powerful vertical takeoff and complete two backward salto rotations "
+            "in a compact tuck. Maintain height and a tight tuck through the rotations, then "
+            "open early enough to identify and absorb the landing."
+        ),
+        "key_shapes": [
+            "Powerful vertical set",
+            "Two backward rotations",
+            "Compact tuck",
+            "Knees together",
+            "Visible opening for landing",
+        ],
+        "deductions": [
+            {"fault": "Insufficient height"},
+            {"fault": "Loose tuck"},
+            {"fault": "Knees separate"},
+            {"fault": "Opens too late"},
+            {"fault": "Under-rotation"},
+            {"fault": "Low chest on landing"},
+        ],
+        "connections": ["roundoff", "back_handspring"],
+    },
+
+    "double_front_tuck": {
+        "name": "Double Front Tuck",
+        "category": "salto",
+        "direction": "forward",
+        "body_position": "tuck",
+        "difficulty": "AHS",
+        "rotations": {},
+        "how_to": (
+            "Use a powerful two-foot punch to create height, then complete two forward salto "
+            "rotations in a compact tuck. Keep the body centered over the takeoff, maintain "
+            "the tuck through both rotations, and open early enough to prepare for landing."
+        ),
+        "key_shapes": [
+            "Powerful two-foot punch",
+            "Two forward rotations",
+            "Compact tuck",
+            "Centered rotation",
+            "Visible opening for landing",
+        ],
+        "deductions": [
+            {"fault": "Insufficient height"},
+            {"fault": "Rotation begins too early"},
+            {"fault": "Loose tuck"},
+            {"fault": "Knees separate"},
+            {"fault": "Late opening"},
+            {"fault": "Under-rotation"},
+        ],
+        "connections": ["front_handspring", "roundoff"],
+    },
+})
+
+
+# Override profile selection so saltos get salto deductions rather than
+# hand-support deductions.
+def deduction_profiles_for(event: str, skill_id: str, skill: dict):
+    profiles = []
+    category = skill.get("category", "").lower()
+
+    if event == "vault":
+        if skill_id == "straddle_vault":
+            return ["straddle_vault_practice", "landing"]
+        return ["vault_handspring", "landing"]
+
+    profiles.append("universal_form")
+
+    if event == "bars":
+        profiles.append("bars_execution")
+        return profiles
+
+    if event == "beam":
+        profiles.append("beam_execution")
+    elif event == "floor":
+        profiles.append("floor_execution")
+
+    if category in {"jump", "dance"}:
+        profiles.append("jump_dance")
+    if category == "turn":
+        profiles.append("turn")
+    if category == "balance":
+        profiles.append("balance")
+    if category == "salto":
+        profiles.append("salto")
+    elif category in {"acro", "acro flight", "dismount"}:
+        profiles.append("hand_support_acro")
+
+    if "walkover" in skill_id:
+        profiles.append("walkover")
+    if "handspring" in skill_id:
+        profiles.append("handspring")
+    if "aerial" in skill_id:
+        profiles.append("aerial")
+    if "dismount" in skill_id:
+        profiles.append("dismount")
+
+    if skill_id == "split_jump":
+        profiles.append("split_shape")
+    if skill_id == "straddle_jump":
+        profiles.append("straddle_shape")
+    if skill_id == "wolf_jump":
+        profiles.append("wolf_shape")
+
+    if event in {"beam", "floor"} and category != "balance":
+        profiles.append("landing")
+
+    return profiles

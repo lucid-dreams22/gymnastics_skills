@@ -294,6 +294,28 @@ st.markdown(
         font-weight: 720;
     }
 
+
+    /* Theme-colored primary action button */
+    button[data-testid="stBaseButton-primary"],
+    .stButton > button[kind="primary"] {
+        background: #58786d !important;
+        border: 1px solid #58786d !important;
+        color: #ffffff !important;
+        box-shadow: none !important;
+    }
+
+    button[data-testid="stBaseButton-primary"]:hover,
+    .stButton > button[kind="primary"]:hover {
+        background: #47655b !important;
+        border-color: #47655b !important;
+        color: #ffffff !important;
+    }
+
+    button[data-testid="stBaseButton-primary"]:focus,
+    .stButton > button[kind="primary"]:focus {
+        box-shadow: 0 0 0 0.16rem rgba(88, 120, 109, 0.22) !important;
+    }
+
     @media (max-width: 760px) {
         [data-testid="stHorizontalBlock"] {
             flex-wrap: wrap !important;
