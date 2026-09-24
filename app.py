@@ -18,7 +18,6 @@ except ImportError:
     AI_AVAILABLE = False
 
 
-# MUST be the first Streamlit command.
 st.set_page_config(
     page_title="High School Gymnastics Skill Helper",
     page_icon="🤸",
@@ -26,20 +25,34 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# -----------------------------------------------------------------------------
-# Compact, truly full-width styling
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# Sleek, compact styling
+# ---------------------------------------------------------------------
 st.markdown(
     """
     <style>
-    /* Force the app to actually use the browser width. */
-    .stApp {
-        background: #eef3f1;
-        color: #18211f;
+    /* Hide Streamlit's white top chrome so it doesn't cover the title. */
+    [data-testid="stHeader"] {
+        height: 0 !important;
+        min-height: 0 !important;
+        background: transparent !important;
+    }
+
+    [data-testid="stToolbar"],
+    [data-testid="stDecoration"],
+    #MainMenu,
+    footer {
+        visibility: hidden !important;
+        height: 0 !important;
     }
 
     html, body, [class*="css"], [data-testid="stAppViewContainer"] {
-        font-family: "Aptos", "Segoe UI", Arial, sans-serif !important;
+        font-family: "Inter", "Segoe UI", Arial, sans-serif !important;
+    }
+
+    .stApp {
+        background: #f4f6f5;
+        color: #17201d;
     }
 
     [data-testid="stMain"] {
@@ -47,225 +60,238 @@ st.markdown(
     }
 
     .block-container {
-        width: 96% !important;
-        max-width: 1600px !important;
-        padding: 0.70rem 1.15rem 1.0rem !important;
+        width: 97% !important;
+        max-width: 1700px !important;
+        padding: 0.62rem 1.1rem 1rem !important;
         margin: 0 auto !important;
     }
 
-    /* Compact text */
     h1 {
-        font-size: 1.82rem !important;
-        line-height: 1.05 !important;
-        margin: 0 0 0.08rem 0 !important;
-        letter-spacing: -0.025em;
+        font-size: 2.15rem !important;
+        line-height: 1.02 !important;
+        margin: 0 0 0.05rem 0 !important;
+        letter-spacing: -0.035em;
+        font-weight: 760 !important;
     }
 
     h2 {
-        font-size: 1.28rem !important;
-        margin: 0.45rem 0 0.24rem !important;
+        font-size: 1.36rem !important;
+        margin: 0.42rem 0 0.18rem !important;
+        font-weight: 720 !important;
     }
 
     h3 {
-        font-size: 1.02rem !important;
-        margin: 0.38rem 0 0.20rem !important;
+        font-size: 1.12rem !important;
+        margin: 0.34rem 0 0.15rem !important;
+        font-weight: 720 !important;
     }
 
-    p, li, label, .stMarkdown, .stCaption {
-        line-height: 1.20 !important;
+    p, li, label, .stMarkdown {
+        font-size: 0.96rem !important;
+        line-height: 1.24 !important;
     }
 
     [data-testid="stCaptionContainer"] {
-        margin-top: -0.15rem !important;
-        margin-bottom: 0.20rem !important;
+        margin-top: -0.08rem !important;
+        margin-bottom: 0.16rem !important;
     }
 
-    /* Keep widgets short */
+    [data-testid="stCaptionContainer"] p {
+        font-size: 0.82rem !important;
+        color: #64706c !important;
+    }
+
+    [data-testid="stHorizontalBlock"] {
+        gap: 0.72rem !important;
+        align-items: flex-start !important;
+        flex-wrap: nowrap !important;
+    }
+
+    [data-testid="column"] {
+        min-width: 0 !important;
+    }
+
     div[data-testid="stSelectbox"],
     div[data-testid="stMultiSelect"],
     div[data-testid="stTextArea"] {
-        margin-bottom: 0.15rem !important;
+        margin-bottom: 0.06rem !important;
     }
 
     div[data-testid="stSelectbox"] label,
     div[data-testid="stMultiSelect"] label,
     div[data-testid="stTextArea"] label {
-        font-size: 0.79rem !important;
+        font-size: 0.88rem !important;
         font-weight: 700 !important;
-        margin-bottom: 0.04rem !important;
+        margin-bottom: 0.03rem !important;
     }
 
     div[data-baseweb="select"] > div {
-        min-height: 2.15rem !important;
-        height: 2.15rem !important;
+        min-height: 2.35rem !important;
+        height: 2.35rem !important;
         background: #ffffff !important;
-        border-color: #cbd8d3 !important;
-        border-radius: 8px !important;
+        border: 1px solid #cfd8d4 !important;
+        border-radius: 7px !important;
+        box-shadow: none !important;
     }
 
     div[data-baseweb="select"] span {
-        font-size: 0.88rem !important;
+        font-size: 0.95rem !important;
     }
 
     textarea {
-        min-height: 82px !important;
-        line-height: 1.25 !important;
-    }
-
-    /* Tight column gaps. */
-    [data-testid="stHorizontalBlock"] {
-        gap: 0.65rem !important;
-        align-items: flex-start !important;
+        min-height: 88px !important;
+        line-height: 1.23 !important;
+        font-size: 0.94rem !important;
     }
 
     hr {
-        margin: 0.35rem 0 0.45rem !important;
-        border-color: #d7e0dd !important;
+        margin: 0.30rem 0 0.38rem !important;
+        border-color: #d7dfdc !important;
     }
 
-    .notice {
-        background: #f8fbfa;
-        border: 1px solid #d5dfdc;
-        border-radius: 8px;
-        padding: 0.40rem 0.60rem;
-        font-size: 0.76rem;
-        color: #5a6763;
-        margin: 0.30rem 0 0.45rem;
+    .eyebrow {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 760;
+        color: #6c7773;
+        margin-bottom: 0.12rem;
     }
 
-    .summary-card {
-        background: #ffffff;
-        border: 1px solid #d3ddda;
-        border-radius: 10px;
-        padding: 0.55rem 0.70rem;
-        min-height: 70px;
+    .intro-note {
+        font-size: 0.80rem;
+        color: #5d6965;
+        border-left: 3px solid #789a8d;
+        padding: 0.18rem 0 0.18rem 0.55rem;
+        margin: 0.25rem 0 0.38rem;
+    }
+
+    .summary-line {
+        border-top: 1px solid #d8dfdc;
+        border-bottom: 1px solid #d8dfdc;
+        padding: 0.48rem 0;
+        margin: 0.05rem 0 0.28rem;
     }
 
     .skill-name {
-        font-size: 1.32rem;
-        font-weight: 800;
-        line-height: 1.08;
-        margin-bottom: 0.18rem;
+        font-size: 1.52rem;
+        font-weight: 760;
+        line-height: 1.06;
+        letter-spacing: -0.02em;
     }
 
     .skill-meta {
-        font-size: 0.77rem;
-        color: #67736f;
-        line-height: 1.15;
+        font-size: 0.80rem;
+        color: #65706c;
+        margin-top: 0.10rem;
     }
 
-    .difficulty-card {
-        background: #dfeae6;
-        border: 1px solid #c7d8d2;
-        border-radius: 10px;
-        padding: 0.52rem 0.70rem;
-        min-height: 70px;
+    .difficulty-panel {
+        border-left: 1px solid #cfd8d4;
+        padding-left: 0.78rem;
+        min-height: 58px;
     }
 
-    .difficulty-kicker {
+    .difficulty-title {
+        font-size: 0.72rem;
+        color: #65706c;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
-        font-size: 0.68rem;
-        font-weight: 800;
-        color: #65716d;
-        margin-bottom: 0.10rem;
+        letter-spacing: 0.07em;
+        font-weight: 780;
     }
 
-    .difficulty-full {
-        font-size: 1.02rem !important;
-        font-weight: 850;
-        line-height: 1.12 !important;
+    .difficulty-value {
+        font-size: 1.15rem;
+        line-height: 1.1;
+        font-weight: 780;
+        margin-top: 0.08rem;
         white-space: normal !important;
         overflow: visible !important;
         text-overflow: unset !important;
-        word-break: normal !important;
     }
 
-    .shape-chip {
-        display: inline-block;
-        background: #e5eeeb;
-        border: 1px solid #cedbd7;
-        border-radius: 999px;
-        padding: 0.18rem 0.38rem;
-        margin: 0.05rem 0.08rem 0.05rem 0;
-        font-size: 0.72rem;
-        line-height: 1.1;
+    .point-value {
+        font-size: 0.80rem;
+        color: #4f5c57;
+        margin-top: 0.20rem;
+        line-height: 1.12;
     }
 
-    .deduction-card {
-        background: #ffffff;
-        border: 1px solid #d6dfdc;
-        border-radius: 7px;
-        padding: 0.34rem 0.46rem;
-        margin: 0 0 0.22rem 0;
+    .section-note {
+        font-size: 0.76rem;
+        color: #69746f;
+        line-height: 1.15;
+        margin: -0.08rem 0 0.22rem;
+    }
+
+    .shape-list {
+        font-size: 0.89rem;
+        line-height: 1.30;
+        color: #24302c;
+    }
+
+    /* Deductions: intentionally NOT big cards. */
+    .deduction-item {
+        border-bottom: 1px solid #dce3e0;
+        padding: 0.22rem 0.16rem 0.23rem;
+        margin: 0;
+        min-height: 2.25rem;
     }
 
     .deduction-name {
-        font-size: 0.79rem;
-        font-weight: 730;
+        font-size: 0.84rem;
+        font-weight: 680;
         line-height: 1.07;
-        margin: 0;
     }
 
     .deduction-detail {
-        font-size: 0.66rem;
-        color: #6a7672;
+        font-size: 0.70rem;
+        color: #6a7571;
         line-height: 1.05;
-        margin-top: 0.08rem;
+        margin-top: 0.06rem;
     }
 
-    .combo-card {
-        background: #ffffff;
-        border: 1px solid #d6dfdc;
-        border-radius: 7px;
-        padding: 0.34rem 0.46rem;
-        margin: 0 0 0.22rem 0;
+    .combo-item {
+        border-bottom: 1px solid #dce3e0;
+        padding: 0.23rem 0.16rem 0.24rem;
+        margin: 0;
     }
 
-    .combo-line {
-        font-size: 0.78rem;
-        font-weight: 760;
+    .combo-name {
+        font-size: 0.84rem;
+        font-weight: 700;
         line-height: 1.08;
     }
 
     .combo-detail {
-        font-size: 0.66rem;
-        color: #687470;
+        font-size: 0.70rem;
+        color: #68736f;
         line-height: 1.08;
-        margin-top: 0.08rem;
+        margin-top: 0.06rem;
     }
 
-    .section-note {
-        font-size: 0.70rem;
-        color: #697570;
-        line-height: 1.12;
-        margin-top: -0.14rem;
-        margin-bottom: 0.28rem;
+    div[data-testid="stAlert"] {
+        padding-top: 0.42rem !important;
+        padding-bottom: 0.42rem !important;
     }
 
     div[data-testid="stExpander"] {
-        border-radius: 8px !important;
+        border-radius: 7px !important;
+        margin-top: 0.18rem !important;
     }
 
     .stButton > button {
-        height: 2.25rem;
-        border-radius: 8px;
-        font-weight: 800;
+        height: 2.35rem;
+        border-radius: 7px;
+        font-size: 0.92rem;
+        font-weight: 720;
     }
 
-    /* Prevent Streamlit's usual early column stacking on normal laptop widths. */
-    @media (min-width: 700px) {
+    @media (max-width: 760px) {
         [data-testid="stHorizontalBlock"] {
-            flex-wrap: nowrap !important;
+            flex-wrap: wrap !important;
         }
 
-        [data-testid="column"] {
-            min-width: 0 !important;
-            flex: 1 1 0 !important;
-        }
-    }
-
-    @media (max-width: 699px) {
         .block-container {
             width: 100% !important;
             padding-left: 0.65rem !important;
@@ -284,7 +310,6 @@ EVENT_LABELS = {
     "beam": "Balance Beam",
     "floor": "Floor Exercise",
 }
-
 
 ROTATION_SHORT = {
     "0": "No turn",
@@ -323,12 +348,33 @@ def difficulty_text(code):
     return label
 
 
+def max_difficulty_credit(code):
+    """
+    NFHS routine Difficulty is worth 3.0 total.
+    The basic requirement is scored as:
+      4 Medium VPs @ 0.30 each
+      3 Superior VPs @ 0.50 each
+      1 HS/AHS VP @ 0.30
+    This is therefore displayed as maximum routine Difficulty credit for
+    this VP slot, not as an intrinsic cash-like 'price' of the element.
+    """
+    mapping = {
+        "M": "0.30",
+        "S": "0.50",
+        "HS": "0.30",
+        "AHS": "0.30 + possible bonus",
+        "NONE": "No standalone VP credit",
+        "NR": "Not valued under current NFHS rules",
+        "NA": "See vault value table",
+    }
+    return mapping.get(code, "Varies")
+
+
 def skill_base_name(skill):
     return skill.get("display_alias", skill["name"])
 
 
 def exact_variation_name(skill, rotation=None):
-    """Name one exact variation, not just the skill family."""
     base = skill_base_name(skill)
 
     if rotation is None or not skill.get("rotations"):
@@ -358,7 +404,6 @@ def deduction_detail(item):
 
 
 def merged_deductions(event, skill_id, skill):
-    """Skill-specific + researched event/category profiles, deduplicated."""
     result = []
     seen = set()
 
@@ -367,6 +412,7 @@ def merged_deductions(event, skill_id, skill):
             item = {"fault": raw} if isinstance(raw, str) else dict(raw)
             fault = item.get("fault", "").strip()
             key = fault.lower()
+
             if fault and key not in seen:
                 result.append(item)
                 seen.add(key)
@@ -384,66 +430,74 @@ def render_deductions(event, skill_id, skill):
 
     st.subheader("Possible deductions / errors")
     st.markdown(
-        '<div class="section-note">Skill-specific faults plus relevant form, event, and landing errors.</div>',
+        '<div class="section-note">'
+        'Skill-specific faults plus relevant form, event, and landing deductions.'
+        '</div>',
         unsafe_allow_html=True,
     )
 
-    left, right = st.columns(2, gap="small")
+    cols = st.columns(3, gap="small")
+
     for i, item in enumerate(items):
-        target = left if i % 2 == 0 else right
-        with target:
+        with cols[i % 3]:
             name = html.escape(item["fault"])
             detail = html.escape(deduction_detail(item))
+
             st.markdown(
                 f"""
-                <div class="deduction-card">
+                <div class="deduction-item">
                     <div class="deduction-name">{name}</div>
-                    <div class="deduction-detail">{detail or "Possible execution deduction / error"}</div>
+                    <div class="deduction-detail">
+                        {detail or "Possible execution deduction / error"}
+                    </div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
+
     return items
 
 
 def combo_bonus(first_diff, second_diff):
     key = f"{first_diff}+{second_diff}"
     rule = COMBINATION_RULES["beam_or_floor_bbs"].get(key)
+
     if rule:
         return rule["label"], rule["bonus"]
+
     return "No BBS bonus in simplified NFHS logic", 0.0
 
 
 def partner_ids(event, selected_id, selected_skill):
-    """
-    Dance/jump/turn: show every exact rotation combination among the small
-    project skill set, including same-skill combinations.
-    Acro/bars: use stored realistic connections.
-    """
     category = selected_skill.get("category", "").lower()
 
     if event in {"beam", "floor"} and category in {"jump", "dance", "turn"}:
-        allowed_categories = {"jump", "dance", "turn"}
         return [
-            sid for sid, data in SKILLS[event].items()
-            if data.get("category", "").lower() in allowed_categories
+            sid
+            for sid, data in SKILLS[event].items()
+            if data.get("category", "").lower() in {"jump", "dance", "turn"}
         ]
 
     ids = list(selected_skill.get("connections", []))
 
-    # Same-skill repetitions are useful for connected dance/jump series.
-    if event in {"beam", "floor"} and category in {"acro", "acro flight"}:
-        if selected_id in {"back_walkover", "cartwheel", "front_handspring", "back_handspring"}:
-            if selected_id not in ids:
-                ids.insert(0, selected_id)
+    if event in {"beam", "floor"} and selected_id in {
+        "back_walkover",
+        "cartwheel",
+        "front_handspring",
+        "back_handspring",
+    }:
+        if selected_id not in ids:
+            ids.insert(0, selected_id)
 
     return [sid for sid in ids if sid in SKILLS[event]]
 
 
 def target_variations(skill):
     rotations = skill.get("rotations", {})
+
     if rotations:
-        return [(rot, diff) for rot, diff in rotations.items()]
+        return list(rotations.items())
+
     return [(None, skill.get("difficulty", "NA"))]
 
 
@@ -451,14 +505,15 @@ def render_combinations(event, skill_id, skill, selected_rotation, selected_diff
     st.subheader("Possible combinations")
     st.markdown(
         '<div class="section-note">'
-        'Each line is an exact combination. Rotation is shown for both skills when applicable.'
+        'Every row names the exact rotation of both skills when rotation applies.'
         '</div>',
         unsafe_allow_html=True,
     )
 
     ids = partner_ids(event, skill_id, skill)
+
     if not ids:
-        st.caption("No combinations are stored for this skill.")
+        st.caption("No combinations stored for this skill.")
         return
 
     first_name = exact_variation_name(skill, selected_rotation)
@@ -466,6 +521,7 @@ def render_combinations(event, skill_id, skill, selected_rotation, selected_diff
 
     for target_id in ids:
         target = SKILLS[event][target_id]
+
         for target_rotation, target_diff in target_variations(target):
             second_name = exact_variation_name(target, target_rotation)
 
@@ -475,39 +531,40 @@ def render_combinations(event, skill_id, skill, selected_rotation, selected_diff
             if event in {"beam", "floor"}:
                 label, bonus = combo_bonus(selected_difficulty, target_diff)
 
-                # Beam's selected-project medium acro exceptions.
                 exception_key = f"{skill_id}+{target_id}"
                 exception = COMBINATION_RULES.get(
                     "beam_medium_acro_series_exceptions", {}
                 ).get(exception_key)
+
                 if event == "beam" and exception:
                     label = exception
 
             combos.append(
-                {
-                    "name": f"{first_name} → {second_name}",
-                    "difficulty": f"{difficulty_text(selected_difficulty)} + {difficulty_text(target_diff)}",
-                    "label": label,
-                    "bonus": bonus,
-                }
+                (
+                    f"{first_name} → {second_name}",
+                    f"{difficulty_text(selected_difficulty)} + "
+                    f"{difficulty_text(target_diff)}",
+                    label,
+                    bonus,
+                )
             )
 
-    # Two dense columns, all exact options visible.
-    left, right = st.columns(2, gap="small")
-    for i, combo in enumerate(combos):
-        target = left if i % 2 == 0 else right
-        bonus_text = (
-            f"{combo['label']} · +{combo['bonus']:.2f}"
-            if combo["bonus"] > 0
-            else combo["label"]
+    cols = st.columns(3, gap="small")
+
+    for i, (name, difficulties, label, bonus) in enumerate(combos):
+        extra = (
+            f"{label} · +{bonus:.2f}"
+            if bonus > 0
+            else label
         )
-        with target:
+
+        with cols[i % 3]:
             st.markdown(
                 f"""
-                <div class="combo-card">
-                    <div class="combo-line">{html.escape(combo["name"])}</div>
+                <div class="combo-item">
+                    <div class="combo-name">{html.escape(name)}</div>
                     <div class="combo-detail">
-                        {html.escape(combo["difficulty"])} · {html.escape(bonus_text)}
+                        {html.escape(difficulties)} · {html.escape(extra)}
                     </div>
                 </div>
                 """,
@@ -515,25 +572,29 @@ def render_combinations(event, skill_id, skill, selected_rotation, selected_diff
             )
 
 
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------
 # Header
-# -----------------------------------------------------------------------------
-st.title("🤸 High School Gymnastics Skill Helper")
+# ---------------------------------------------------------------------
+st.title("High School Gymnastics Skill Helper")
 st.caption("NFHS-focused reference for selected varsity gymnastics skills")
+
 st.markdown(
     """
-    <div class="notice">
-    Educational reference only. Technique descriptions are coaching guidance;
-    competition rulings should be verified against the current NFHS rules and state association.
+    <div class="intro-note">
+    Educational reference only. Technique guidance is not a substitute for a coach,
+    judge, current NFHS rules, or your state association.
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-# -----------------------------------------------------------------------------
-# ONE ROW: event + skill + rotation
-# -----------------------------------------------------------------------------
-event_col, skill_col, rotation_col = st.columns([1.0, 1.55, 1.0], gap="small")
+# ---------------------------------------------------------------------
+# Event / Skill / Rotation: same row
+# ---------------------------------------------------------------------
+event_col, skill_col, rotation_col = st.columns(
+    [1.0, 1.45, 1.0],
+    gap="small",
+)
 
 with event_col:
     event = st.selectbox(
@@ -561,36 +622,40 @@ with rotation_col:
             list(rotations.keys()),
             format_func=rotation_dropdown,
         )
+
         difficulty = difficulty_for_rotation(
-            event, skill_id, selected_rotation
+            event,
+            skill_id,
+            selected_rotation,
         )
     else:
         selected_rotation = None
+
         st.selectbox(
             "Rotation",
             ["Not applicable"],
             disabled=True,
         )
+
         difficulty = skill.get("difficulty", "NA")
 
-st.divider()
-
-# -----------------------------------------------------------------------------
-# Compact summary row
-# -----------------------------------------------------------------------------
-summary_left, summary_right = st.columns([2.35, 1.35], gap="small")
+# ---------------------------------------------------------------------
+# Summary / Difficulty
+# ---------------------------------------------------------------------
+summary_left, summary_right = st.columns([2.25, 1.25], gap="small")
 
 with summary_left:
     exact_name = exact_variation_name(skill, selected_rotation)
-    metadata = [EVENT_LABELS[event]]
+
+    meta = [EVENT_LABELS[event]]
     if skill.get("display_alias") and skill["display_alias"] != skill["name"]:
-        metadata.append(f"Technical: {skill['name']}")
+        meta.append(f"Technical name: {skill['name']}")
 
     st.markdown(
         f"""
-        <div class="summary-card">
+        <div class="summary-line">
             <div class="skill-name">{html.escape(exact_name)}</div>
-            <div class="skill-meta">{html.escape(" · ".join(metadata))}</div>
+            <div class="skill-meta">{html.escape(" · ".join(meta))}</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -599,9 +664,14 @@ with summary_left:
 with summary_right:
     st.markdown(
         f"""
-        <div class="difficulty-card">
-            <div class="difficulty-kicker">Difficulty</div>
-            <div class="difficulty-full">{html.escape(difficulty_text(difficulty))}</div>
+        <div class="summary-line difficulty-panel">
+            <div class="difficulty-title">Difficulty</div>
+            <div class="difficulty-value">
+                {html.escape(difficulty_text(difficulty))}
+            </div>
+            <div class="point-value">
+                Max difficulty credit: <strong>{html.escape(max_difficulty_credit(difficulty))}</strong>
+            </div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -609,14 +679,14 @@ with summary_right:
 
 if skill.get("competition_status") == "not_recognized_nfhs_2026_28":
     st.warning(
-        "Straddle vault is kept here as a practice/teaching skill, but NFHS 2026–28 "
-        "no longer lists the flight/straddle vault as a valued competition vault."
+        "This vault is kept as a teaching reference, but NFHS 2026–28 "
+        "does not list the straddle/flight vault as a valued competition vault."
     )
 
-# -----------------------------------------------------------------------------
-# How-to + key shapes on one row
-# -----------------------------------------------------------------------------
-how_col, shape_col = st.columns([1.7, 1.0], gap="small")
+# ---------------------------------------------------------------------
+# How-to and form
+# ---------------------------------------------------------------------
+how_col, key_col = st.columns([1.7, 1.0], gap="small")
 
 with how_col:
     st.subheader("How to perform it")
@@ -627,18 +697,26 @@ with how_col:
             f"Expected hold: {skill['hold_seconds']} seconds in the final controlled position."
         )
 
-with shape_col:
+with key_col:
     st.subheader("Key positions")
-    chips = "".join(
-        f'<span class="shape-chip">{html.escape(shape)}</span>'
-        for shape in skill.get("key_shapes", [])
-    )
-    st.markdown(chips or "No key positions stored.", unsafe_allow_html=True)
 
-# -----------------------------------------------------------------------------
-# Deductions and exact combinations
-# -----------------------------------------------------------------------------
+    if skill.get("key_shapes"):
+        key_text = "<br>".join(
+            f"• {html.escape(shape)}"
+            for shape in skill["key_shapes"]
+        )
+        st.markdown(
+            f'<div class="shape-list">{key_text}</div>',
+            unsafe_allow_html=True,
+        )
+    else:
+        st.caption("No key positions stored.")
+
+# ---------------------------------------------------------------------
+# Deductions / combinations
+# ---------------------------------------------------------------------
 deductions = render_deductions(event, skill_id, skill)
+
 render_combinations(
     event,
     skill_id,
@@ -647,30 +725,32 @@ render_combinations(
     difficulty,
 )
 
-# Rule / safety notes side by side and collapsed.
 if skill.get("rule_note") or skill.get("safety"):
-    note_a, note_b = st.columns(2, gap="small")
+    a, b = st.columns(2, gap="small")
+
     if skill.get("rule_note"):
-        with note_a:
+        with a:
             with st.expander("Rule note"):
                 st.write(skill["rule_note"])
+
     if skill.get("safety"):
-        with note_b:
+        with b:
             with st.expander("Safety note"):
                 st.write(skill["safety"])
 
 st.divider()
 
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------
 # AI
-# -----------------------------------------------------------------------------
-st.subheader("AI Skill Analysis")
+# ---------------------------------------------------------------------
+st.subheader("Skill analysis")
 
-ai_left, ai_right = st.columns([1.45, 1.0], gap="small")
+ai_left, ai_right = st.columns([1.4, 1.0], gap="small")
+
 with ai_left:
     problem = st.text_area(
         "What is going wrong?",
-        placeholder="Example: I get height but start twisting too early and land off balance.",
+        placeholder="Example: I get height but start twisting early and land off balance.",
     )
 
 with ai_right:
@@ -679,31 +759,43 @@ with ai_right:
         [item["fault"] for item in deductions],
     )
 
-if st.button("Analyze My Skill", type="primary", use_container_width=True):
+if st.button("Analyze skill", type="primary", use_container_width=True):
     if not problem.strip() and not observed:
         st.warning("Describe the problem or choose at least one observed error.")
+
     elif not AI_AVAILABLE:
-        st.info("Add ai_helper.py to enable AI analysis.")
+        st.info("Add ai_helper.py to enable analysis.")
+
     else:
         try:
-            with st.spinner("Analyzing your skill..."):
+            with st.spinner("Analyzing..."):
                 result = analyze_skill(
                     api_key=st.secrets["GROQ_API_KEY"],
                     event=EVENT_LABELS[event],
-                    skill_name=exact_variation_name(skill, selected_rotation),
+                    skill_name=exact_variation_name(
+                        skill,
+                        selected_rotation,
+                    ),
                     difficulty=difficulty_text(difficulty),
-                    rotation=rotation_dropdown(selected_rotation) if selected_rotation is not None else None,
+                    rotation=(
+                        rotation_dropdown(selected_rotation)
+                        if selected_rotation is not None
+                        else None
+                    ),
                     how_to=skill.get("how_to", ""),
                     key_shapes=skill.get("key_shapes", []),
                     observed_errors=observed,
                     gymnast_description=problem.strip(),
                 )
-            st.subheader("AI Analysis")
+
+            st.subheader("Analysis")
             st.markdown(result)
+
         except KeyError:
             st.error("GROQ_API_KEY is not configured in Streamlit Secrets.")
+
         except Exception as exc:
-            st.error(f"AI analysis failed: {exc}")
+            st.error(f"Analysis failed: {exc}")
 
 st.caption(
     "NFHS rules cycle targeted: 2026–28. State associations may adopt variations."
