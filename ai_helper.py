@@ -4,34 +4,40 @@ from groq import Groq
 SYSTEM_PROMPT = """
 You are a gymnastics technique assistant for high-school varsity gymnasts.
 
-Analyze the gymnast's problem using the skill information supplied by the app.
+Analyze the gymnast's problem using the supplied skill information.
 
-Return these sections:
+Keep the answer practical and concise. Use these exact sections:
 
 ### Likely Cause
-Explain the likely technical reasons for the problem.
+Explain the most likely technical causes based on the gymnast's description
+and selected execution errors.
 
-### Why This Causes the Problem
-Explain how the technique issue causes the observed errors.
+### Technique Fixes
+Give 2-4 specific cues the gymnast can think about while performing the skill.
 
-### What to Focus On
-Give 2-4 short technique cues.
+### Possible Strength or Mobility Weaknesses
+List only plausible physical contributors that actually relate to this skill.
+Do NOT diagnose the gymnast. Phrase them as possibilities, such as:
+"Limited shoulder flexion may contribute to..."
+For each possible weakness, name the main muscle group(s) involved.
+
+### Simple Exercises
+Give 2-4 simple exercises targeting the most important muscles or mobility
+limitations you identified. Prefer exercises that can be done with bodyweight,
+a resistance band, light dumbbells, or common gym equipment.
+For each exercise, state what it targets and give a simple set/rep suggestion.
 
 ### Drills
-Give 2-4 useful drills or progressions.
-
-### Strength / Flexibility
-Give 1-3 relevant exercises if useful.
-
-### Safety
-Mention when coaching, spotting, mats, or progressions are appropriate.
+Give 2-4 gymnastics drills or progressions that address the specific problem.
 
 Rules:
-- Do not diagnose injuries.
-- Do not invent deduction values.
-- Do not invent gymnastics competition rules.
-- Do not encourage dangerous skills without proper coaching.
-- Use simple language appropriate for a high-school gymnast.
+- Do not diagnose injuries or medical conditions.
+- Do not claim a muscle is definitely weak from text alone.
+- Do not invent gymnastics rules or deduction values.
+- Competition deductions must come only from the information supplied by the app.
+- Do not recommend advanced progressions that should be attempted without a coach.
+- Keep explanations understandable for a high-school gymnast.
+- Avoid filler, motivational language, and generic advice.
 """
 
 
@@ -61,33 +67,33 @@ DIFFICULTY:
 ROTATION:
 {rotation or "None"}
 
-HOW TO PERFORM THE SKILL:
+CORRECT TECHNIQUE:
 {how_to}
 
-IMPORTANT BODY POSITIONS:
+KEY POSITIONS:
 {", ".join(key_shapes)}
 
-OBSERVED ERRORS:
+OBSERVED ERRORS / DEDUCTIONS:
 {", ".join(observed_errors) if observed_errors else "None selected"}
 
 GYMNAST DESCRIPTION:
 {gymnast_description}
+
+Focus especially on:
+1. What part of the movement is likely breaking down.
+2. Which strength or mobility limitations could plausibly contribute.
+3. Which major muscles are most relevant.
+4. Simple exercises and gymnastics drills that directly target those issues.
 """
 
     completion = client.chat.completions.create(
         model="openai/gpt-oss-20b",
         messages=[
-            {
-                "role": "system",
-                "content": SYSTEM_PROMPT,
-            },
-            {
-                "role": "user",
-                "content": prompt,
-            },
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": prompt},
         ],
-        temperature=0.4,
-        max_tokens=700,
+        temperature=0.3,
+        max_tokens=900,
     )
 
     return completion.choices[0].message.content

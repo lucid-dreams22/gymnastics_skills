@@ -76,13 +76,13 @@ st.markdown(
 
     h2 {
         font-size: 1.36rem !important;
-        margin: 0.42rem 0 0.18rem !important;
+        margin: 0.30rem 0 0.14rem !important;
         font-weight: 720 !important;
     }
 
     h3 {
         font-size: 1.12rem !important;
-        margin: 0.34rem 0 0.15rem !important;
+        margin: 0.26rem 0 0.12rem !important;
         font-weight: 720 !important;
     }
 
@@ -422,6 +422,17 @@ def deduction_detail(item):
     return " · ".join(bits)
 
 
+def deduction_sort_value(item):
+    """Highest possible numerical deduction first; unscored faults last."""
+    if "value" in item:
+        return float(item["value"])
+    if "max" in item:
+        return float(item["max"])
+    if "range" in item and item["range"]:
+        return float(max(item["range"]))
+    return -1.0
+
+
 def merged_deductions(event, skill_id, skill):
     result = []
     seen = set()
@@ -441,7 +452,14 @@ def merged_deductions(event, skill_id, skill):
     for profile_name in deduction_profiles_for(event, skill_id, skill):
         add(DEDUCTION_PROFILES.get(profile_name, []))
 
-    return result
+    return sorted(
+        result,
+        key=lambda item: (
+            deduction_sort_value(item),
+            item.get("fault", "").lower(),
+        ),
+        reverse=True,
+    )
 
 
 def render_deductions(event, skill_id, skill):
@@ -658,21 +676,25 @@ with summary_left:
     )
 
 with summary_right:
-    st.markdown(
-        f"""
-        <div class="summary-line difficulty-panel">
-            <div class="difficulty-title">Difficulty</div>
-            <div class="difficulty-value">
-                {html.escape(difficulty_text(difficulty))}
-            </div>
-            <div class="point-value">
-                Max points: <strong>{html.escape(point_value(event, skill_id, difficulty))}</strong>
-                {f'<div class="point-detail">{html.escape(point_value_detail(event, skill_id, difficulty))}</div>' if point_value_detail(event, skill_id, difficulty) else ''}
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
+    detail_text = point_value_detail(event, skill_id, difficulty)
+    detail_html = (
+        f'<div class="point-detail">{html.escape(detail_text)}</div>'
+        if detail_text
+        else ""
     )
+
+    difficulty_html = f"""
+    <div class="summary-line difficulty-panel">
+        <div class="difficulty-title">Difficulty</div>
+        <div class="difficulty-value">{html.escape(difficulty_text(difficulty))}</div>
+        <div class="point-value">
+            Max points: <strong>{html.escape(point_value(event, skill_id, difficulty))}</strong>
+        </div>
+        {detail_html}
+    </div>
+    """
+
+    st.markdown(difficulty_html, unsafe_allow_html=True)
 
 if skill.get("competition_status") == "not_recognized_nfhs_2026_28":
     st.warning(
@@ -722,18 +744,9 @@ render_combinations(
     difficulty,
 )
 
-if skill.get("rule_note") or skill.get("safety"):
-    a, b = st.columns(2, gap="small")
-
-    if skill.get("rule_note"):
-        with a:
-            with st.expander("Rule note"):
-                st.write(skill["rule_note"])
-
-    if skill.get("safety"):
-        with b:
-            with st.expander("Safety note"):
-                st.write(skill["safety"])
+if skill.get("rule_note"):
+    with st.expander("Rule note"):
+        st.write(skill["rule_note"])
 
 st.divider()
 
