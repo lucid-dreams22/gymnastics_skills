@@ -7,6 +7,8 @@ from skills_data import (
     difficulty_for_rotation,
 )
 
+from ai_helper import analyze_skill
+
 st.set_page_config(
     page_title="High School Gymnastics Skill Helper",
     page_icon="🤸",
@@ -208,13 +210,47 @@ observed = st.multiselect(
 )
 
 if st.button("Analyze My Skill", type="primary"):
+
     if not problem.strip() and not observed:
-        st.warning("Describe the problem or select at least one observed error first.")
-    else:
-        st.info(
-            "The interface is working. The next development step is connecting this "
-            "button to an AI model so it can generate individualized analysis."
+        st.warning(
+            "Describe the problem or select at least one observed error first."
         )
+
+    else:
+        try:
+            with st.spinner("Analyzing your skill..."):
+
+                rotation_text = (
+                    pretty_rotation(selected_rotation)
+                    if selected_rotation is not None
+                    else None
+                )
+
+                result = analyze_skill(
+                    api_key=st.secrets["GROQ_API_KEY"],
+                    event=EVENT_LABELS[event],
+                    skill_name=skill["name"],
+                    difficulty=DIFFICULTY_LABELS.get(
+                        difficulty,
+                        difficulty
+                    ),
+                    rotation=rotation_text,
+                    how_to=skill.get("how_to", ""),
+                    key_shapes=skill.get("key_shapes", []),
+                    observed_errors=observed,
+                    gymnast_description=problem.strip(),
+                )
+
+            st.subheader("AI Analysis")
+            st.markdown(result)
+
+        except KeyError:
+            st.error(
+                "The Groq API key has not been configured."
+            )
+
+        except Exception as e:
+            st.error(f"AI analysis failed: {e}")
         st.write("**Information that would be sent to the AI:**")
         st.write(f"- Event: {EVENT_LABELS[event]}")
         st.write(f"- Skill: {skill['name']}")
