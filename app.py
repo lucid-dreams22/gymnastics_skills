@@ -377,38 +377,75 @@ def difficulty_text(code):
     return label
 
 
-def point_value(event, skill_id, difficulty):
+def scoring_display(event, skill_id, difficulty):
     """
-    NFHS scoring:
-    - Vault uses a vault start value.
-    - Bars/beam/floor use routine Difficulty credit.
-    - AHS may additionally earn 0.20 AHS bonus when eligible.
+    Keep vault start values separate from bars/beam/floor routine difficulty credit.
     """
     if event == "vault":
         if skill_id == "front_handspring":
-            return "8.60 start value"
+            return {
+                "label": "Start value",
+                "value": "8.60",
+                "detail": "",
+            }
         if skill_id == "straddle_vault":
-            return "No current NFHS value"
-        return "See vault chart"
+            return {
+                "label": "Start value",
+                "value": "No current NFHS value",
+                "detail": "",
+            }
+        return {
+            "label": "Start value",
+            "value": "See current vault table",
+            "detail": "",
+        }
 
     mapping = {
-        "M": "0.30",
-        "S": "0.50",
-        "HS": "0.30",
-        "AHS": "0.50 max",
-        "NONE": "0.00",
-        "NR": "No current NFHS value",
-        "NA": "—",
+        "M": {
+            "label": "Routine difficulty contribution",
+            "value": "0.30",
+            "detail": "",
+        },
+        "S": {
+            "label": "Routine difficulty contribution",
+            "value": "0.50",
+            "detail": "",
+        },
+        "HS": {
+            "label": "Routine difficulty contribution",
+            "value": "0.30",
+            "detail": "",
+        },
+        "AHS": {
+            "label": "Routine difficulty contribution",
+            "value": "0.30",
+            "detail": "Potential AHS bonus: +0.20",
+        },
+        "NONE": {
+            "label": "Routine difficulty contribution",
+            "value": "0.00",
+            "detail": "",
+        },
+        "NR": {
+            "label": "Routine difficulty contribution",
+            "value": "No current NFHS value",
+            "detail": "",
+        },
+        "NA": {
+            "label": "Routine difficulty contribution",
+            "value": "—",
+            "detail": "",
+        },
     }
-    return mapping.get(difficulty, "—")
 
-
-def point_value_detail(event, skill_id, difficulty):
-    if event == "vault":
-        return ""
-    if difficulty == "AHS":
-        return "0.30 difficulty + up to 0.20 AHS bonus"
-    return ""
+    return mapping.get(
+        difficulty,
+        {
+            "label": "Routine difficulty contribution",
+            "value": "—",
+            "detail": "",
+        },
+    )
 
 
 def skill_base_name(skill):
@@ -563,60 +600,76 @@ def render_combinations(event, skill_id, skill, selected_rotation, selected_diff
         st.caption("No combinations stored for this skill.")
         return
 
-    first_name = exact_variation_name(skill, selected_rotation)
-    combos = []
+    combo_skill_col, combo_rotation_col = st.columns([1.45, 1.0], gap="small")
 
-    for target_id in ids:
-        target = SKILLS[event][target_id]
-
-        for target_rotation, target_diff in target_variations(target):
-            second_name = exact_variation_name(target, target_rotation)
-
-            label = "Direct combination"
-            bonus = 0.0
-
-            if event in {"beam", "floor"}:
-                label, bonus = combo_bonus(selected_difficulty, target_diff)
-
-                exception_key = f"{skill_id}+{target_id}"
-                exception = COMBINATION_RULES.get(
-                    "beam_medium_acro_series_exceptions", {}
-                ).get(exception_key)
-
-                if event == "beam" and exception:
-                    label = exception
-
-            combos.append(
-                (
-                    f"{first_name} → {second_name}",
-                    f"{difficulty_text(selected_difficulty)} + "
-                    f"{difficulty_text(target_diff)}",
-                    label,
-                    bonus,
-                )
-            )
-
-    cols = st.columns(3, gap="small")
-
-    for i, (name, difficulties, label, bonus) in enumerate(combos):
-        extra = (
-            f"{label} · +{bonus:.2f}"
-            if bonus > 0
-            else label
+    with combo_skill_col:
+        target_id = st.selectbox(
+            "Second skill",
+            ids,
+            format_func=lambda sid: skill_base_name(SKILLS[event][sid]),
+            key=f"combo_skill_{event}_{skill_id}",
         )
 
-        with cols[i % 3]:
-            st.markdown(
-                f"""
-                <div class="combo-item">
-                    <div class="combo-name">{html.escape(name)}</div>
-                    <div class="combo-detail">
-                        {html.escape(difficulties)} · {html.escape(extra)}
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True,
+    target = SKILLS[event][target_id]
+    target_rots = target.get("rotations", {})
+
+    with combo_rotation_col:
+        if target_rots:
+            target_rotation = st.selectbox(
+                "Second-skill rotation",
+                list(target_rots.keys()),
+                format_func=rotation_dropdown,
+                key=f"combo_rotation_{event}_{skill_id}_{target_id}",
             )
+            target_diff = target_rots[target_rotation]
+        else:
+            target_rotation = None
+            target_diff = target.get("difficulty", "NA")
+            st.selectbox(
+                "Second-skill rotation",
+                ["Not applicable"],
+                disabled=True,
+                key=f"combo_rotation_na_{event}_{skill_id}_{target_id}",
+            )
+
+    first_name = exact_variation_name(skill, selected_rotation)
+    second_name = exact_variation_name(target, target_rotation)
+
+    label = "Direct combination"
+    bonus = 0.0
+
+    if event in {"beam", "floor"}:
+        label, bonus = combo_bonus(selected_difficulty, target_diff)
+
+        exception_key = f"{skill_id}+{target_id}"
+        exception = COMBINATION_RULES.get(
+            "beam_medium_acro_series_exceptions", {}
+        ).get(exception_key)
+
+        if event == "beam" and exception:
+            label = exception
+
+    bonus_text = (
+        f"{label} · +{bonus:.2f}"
+        if bonus > 0
+        else label
+    )
+
+    st.markdown(
+        f"""
+        <div class="combo-item">
+            <div class="combo-name">
+                {html.escape(first_name)} → {html.escape(second_name)}
+            </div>
+            <div class="combo-detail">
+                {html.escape(difficulty_text(selected_difficulty))}
+                + {html.escape(difficulty_text(target_diff))}
+                · {html.escape(bonus_text)}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 # ---------------------------------------------------------------------
@@ -698,10 +751,11 @@ with summary_left:
     )
 
 with summary_right:
-    detail_text = point_value_detail(event, skill_id, difficulty)
+    scoring = scoring_display(event, skill_id, difficulty)
+
     detail_html = (
-        f'<div class="point-detail">{html.escape(detail_text)}</div>'
-        if detail_text
+        f'<div class="point-detail">{html.escape(scoring["detail"])}</div>'
+        if scoring["detail"]
         else ""
     )
 
@@ -710,7 +764,8 @@ with summary_right:
         <div class="difficulty-title">Difficulty</div>
         <div class="difficulty-value">{html.escape(difficulty_text(difficulty))}</div>
         <div class="point-value">
-            Max points: <strong>{html.escape(point_value(event, skill_id, difficulty))}</strong>
+            {html.escape(scoring["label"])}:
+            <strong>{html.escape(scoring["value"])}</strong>
         </div>
         {detail_html}
     </div>
